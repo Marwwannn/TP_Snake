@@ -44,3 +44,12 @@ j'ai ajouter 2 variable qui est self.clock.tick(Snake.DEFAULT_SPEED) qui permett
 
 J'ai voulus que mon jeu soit jouable a l'infinie sans fermer et relancer, donc je me suis rensegné et ajouter un boutton restart est vraiment long et surment que j'utiliserais gpt mais j'ai trouver une autre solution créer une methode qui renitisialise mes varibale et
 que si j'apuis sur R quand je suis en game over ça relance tout car je reste dans le while meme si je suis en game over.
+
+### Bonus
+
+J'ai repondus a ces condition :
+- Ajouter pas de demi-tour (contrainte sur set_direction), condition
+- Empêcher le serpent de faire demi-tour instantanément, condition
+- Création d'un exécutable (a n de lancer le jeu facilement) ,j'ai utiliser PyInstaller avec la commande ( python3 -m PyInstaller --onefile --windowed Game.py)
+- Ajouter un système d'états (menu, running, paused, game_over) via un pattern State ( a moitier car j'ai juste fais running), j'ai fais un restart et game over. Il me manque seulement paused
+- Un speed de vitesse avec des palier de score (10 et 20 pts)
