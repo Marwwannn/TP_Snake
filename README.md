@@ -71,16 +71,16 @@ J'ai repondus a ces condition :
 
 -  Expliquez le polymorphisme ici : quelle interface implicite partagent Food/Snake ?
   
-Avec Entity elle permet de facilement mettre/ dessiner les entité et ça sert a ça le polymorphisme.
+   Avec Entity elle permet de facilement mettre/ dessiner les entité et ça sert a ça le polymorphisme.
 
 - Pourquoi Food.update() existe alors qu'il ne fait rien ?
 
-Car elle herite indirectement de la methode mére qui est entity car il herite de MovingEntity, elle existe mais ne sert a rien dans food. C'est ça le polymorphisme.
+  Car elle herite indirectement de la methode mére qui est entity car il herite de MovingEntity, elle existe mais ne sert a rien dans food. C'est ça le polymorphisme.
 
 - Pourquoi CELL_SIZE et DEFAULT_SPEED sont des attributs de classe et pas d'instance ?
 
-Car elle doit avoir la meme valeur peu importe les instance.
+  Car elle doit avoir la meme valeur peu importe les instance.
 
 - Donnez un exemple où set_cell_size() protège le programme (valeurs invalides)
 
-if value > 0: Je verifie que la valeur est toujour positive.
+  if value > 0: Je verifie que la valeur est toujour positive.
