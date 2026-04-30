@@ -1,32 +1,15 @@
-<<<<<<< HEAD
 # 🐍 Projet Jeu Snake
-
-Un jeu Snake classique développé en Python avec Pygame.
 
 ## Description
 
-Ce projet est une implémentation du célèbre jeu Snake utilisant la programmation orientée objet.
+Ce projet est une implémentation du jeu Snake créer seul par marwan le goat, en utilisant python et la bibliothèque pygame.
 Le joueur contrôle un serpent qui doit manger de la nourriture pour grandir tout en évitant de se mordre ou de toucher les murs.
 
-## Architecture du projet
-
-Le projet utilise une architecture orientée objet avec les classes suivantes :
-
-| Classe | Rôle |
-|--------|------|
-| `Entity` | Classe de base définissant l'interface commune (`update`, `draw`) |
-| `MovingEntity` | Gère la logique de déplacement (direction, vitesse) |
-| `Snake` | Le serpent du joueur (corps, croissance, collisions) |
-| `Food` | La nourriture à collecter |
-| `Game` | Orchestre le jeu (boucle principale, événements, affichage) |
+## Prérequis
+- Python 3.x
+- Pygame : `pip install pygame`
 
 ## Installation
-
-### Prérequis
-- Python 3.x
-- Pygame
-
-### Étapes
 
 1. Cloner le repository :
 ```bash
@@ -54,37 +37,8 @@ python Game.py
 | → | Aller à droite |
 | R | Relancer la partie (après Game Over) |
 
-## Fonctionnalités
-
-- Déplacement fluide du serpent
-- Croissance du serpent en mangeant la nourriture
-- Affichage du score en temps réel
-- Détection des collisions (murs et soi-même)
-- Écran Game Over avec possibilité de rejouer
-- Augmentation de la difficulté selon le score
-
-## Captures d'écran
-
-*À venir*
-
-## Auteur
-
-Marwy
-
-## Licence
-
-Ce projet est réalisé dans le cadre d'un TP.
-=======
-# Projet Jeu Snake
-
-## Description
-
-Ce projet est une implémentation du jeu Snake créer seul par marwan le goat, en utilisant python et la bibliothèque pygame 
-
-## Prérequis
-installer pygame : pip install pygame
-
 ## Architecture du projet
+
 ### Classe Entity
 
 J'ai pas touché.
@@ -138,16 +92,16 @@ J'ai repondus a ces condition :
 ## Réponse aux questions
 
 - Quels sont les rôles respectifs de Snake, Food, Game ?
-  
+
   Snake gère les element du serpent comme le deplacement, sa gestion de son corp, sa representation graphique. Food gère ma position de la pomme et sa representation graphique.
   Game reuni tout le monde, crée chauque entité verifie des condition comme pour le score si ces deux entité été a la meme position alors +1 au score etc... la partie graphique les titre la fenetre de jeu etc...
 
 - Donnez un exemple concret où l'accès direct à snake._body pourrait casser le jeu.
-  
+
   C'est quand on vide la liste du snake, donc pas de tête et donc on peux plus jouer au jeu.
 
 -  Expliquez le polymorphisme ici : quelle interface implicite partagent Food/Snake ?
-  
+
    Avec Entity elle permet de facilement mettre/ dessiner les entité et ça sert a ça le polymorphisme.
 
 - Pourquoi Food.update() existe alors qu'il ne fait rien ?
@@ -161,4 +115,11 @@ J'ai repondus a ces condition :
 - Donnez un exemple où set_cell_size() protège le programme (valeurs invalides)
 
   if value > 0: Je verifie que la valeur est toujour positive.
->>>>>>> 56d9eab44100ef8e07f69d4f46215296cd26fba9
+
+## Auteur
+
+Marwy
+
+## Licence
+
+Ce projet est réalisé dans le cadre d'un TP.
