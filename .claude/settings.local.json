@@ -3,7 +3,12 @@
     "allow": [
       "Bash(pip install *)",
       "Bash(python -m pip install torch --index-url https://download.pytorch.org/whl/cpu)",
-      "Bash(python *)"
+      "Bash(python *)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(gh auth *)"
     ]
   }
 }
