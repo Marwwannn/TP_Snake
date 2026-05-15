@@ -116,6 +116,58 @@ J'ai repondus a ces condition :
 
   if value > 0: Je verifie que la valeur est toujour positive.
 
+## Partie IA (DQN)
+
+En plus du jeu jouable, le projet contient un agent qui apprend a jouer tout seul avec du Deep Q-Learning.
+
+### Fichiers IA
+
+| Fichier | Role |
+|--------|------|
+| `GameAI.py` | Version step-by-step du jeu : `reset()`, `play_step(action)`, `get_state()`. Pas d'affichage par defaut. |
+| `SnakeAI.py` | Reseau `Linear_QNet` (11 -> 256 -> 3) + `QTrainer` (Adam + MSE) + `Agent` (epsilon-greedy + replay memory). |
+| `train.py` | Boucle d'entrainement. |
+| `play.py` | Charge `model/model.pth` et regarde l'agent jouer. |
+
+### Etat (11 features booleennes)
+
+- 3 : danger tout droit / droite / gauche
+- 4 : direction actuelle (one-hot gauche/droite/haut/bas)
+- 4 : position relative de la pomme (gauche/droite/haut/bas)
+
+### Actions (vecteur 3)
+
+- `[1,0,0]` tout droit
+- `[0,1,0]` tourner a droite
+- `[0,0,1]` tourner a gauche
+
+### Recompenses
+
+- `+10` manger la pomme
+- `-10` mourir (mur, corps, ou plus de 100 * len(snake) frames sans manger)
+- `0` sinon
+
+### Installation des dependances IA
+
+```bash
+pip install -r requirements.txt
+```
+
+### Lancer l'entrainement
+
+```bash
+python train.py            # mode headless rapide
+python train.py --render   # voir l'apprentissage en temps reel
+```
+
+Le modele est sauvegarde dans `model/model.pth` a chaque nouveau record. Stop avec `Ctrl+C`.
+
+### Voir l'agent jouer
+
+```bash
+python play.py
+```
+
 ## Auteur
 
 Marwy
