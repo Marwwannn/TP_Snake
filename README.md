@@ -164,9 +164,44 @@ Le modele est sauvegarde dans `model/model.pth` a chaque nouveau record. Stop av
 
 ### Voir l'agent jouer
 
+Le modele entraine (`model/model.pth`) est **livre avec le projet** : pas besoin
+d'entrainer quoi que ce soit, l'IA joue directement.
+
 ```bash
-python play.py
+python play.py            # une IA entrainee joue au Snake toute seule
+python play.py --speed 60 # plus rapide
 ```
+
+A l'execution, une fenetre s'ouvre et le serpent est entierement controle par
+le reseau de neurones (score moyen ~41, record ~86 sur le modele fourni). A la
+mort, un ecran Game Over s'affiche puis une nouvelle partie demarre
+automatiquement.
+
+## Usage IA
+
+Conformement aux regles du projet, l'utilisation d'outils d'IA est declaree ici.
+
+**A l'exception du jeu Snake de base** (les classes du jeu et leur logique :
+`Entity`, `MovingEntity`, `Snake`, `Food`, `Game`), **tout le reste du projet a ete
+realise avec l'aide de l'IA** :
+
+| Outil | Ou / pourquoi |
+|-------|---------------|
+| **Claude** (Anthropic) | Agent DQN complet (`GameAI.py`, `SnakeAI.py`, `train.py`, `play.py`), rendu graphique ameliore (methodes `draw`), optimisation du modele, et le compte rendu (site). |
+| **ChatGPT** | Aide ponctuelle pour l'affichage pygame (score + ecran Game Over) dans `Game.draw()`. |
+
+Le code genere par IA est encadre directement dans les fichiers source par des blocs :
+
+```
+# ############### CODE IA (nom de l'IA) ###############
+... code ...
+# #####################################################
+```
+
+Exemples de demandes : « implemente un agent DQN en reutilisant mes classes »,
+« rends l'IA plus performante mais n'adopte un modele que s'il bat l'ancien »,
+« rends le jeu plus joli en pur pygame », « fais un site servant de compte rendu ».
+Tous les choix ont ete compris, verifies et sont defendables a l'oral.
 
 ## Auteur
 

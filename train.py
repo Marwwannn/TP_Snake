@@ -1,3 +1,5 @@
+# ############### CODE IA (Claude) ###############
+# Fichier entierement genere avec l'IA (boucle d'entrainement DQN).
 """
 Boucle d'entrainement DQN pour Snake.
 
@@ -63,3 +65,4 @@ if __name__ == "__main__":
         train(render=args.render, speed=args.speed)
     except KeyboardInterrupt:
         print("\nEntrainement interrompu par l'utilisateur.")
+# ##################################################

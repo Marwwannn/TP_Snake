@@ -1,3 +1,5 @@
+# ############### CODE IA (Claude) ###############
+# Fichier entierement genere avec l'IA (agent / environnement DQN).
 import pygame
 import numpy as np
 from Snake import Snake
@@ -155,7 +157,12 @@ class GameAI:
                 return
 
     def _update_ui(self):
-        self.screen.fill("black")
+        self.screen.fill((18, 18, 28))
+        cell = MovingEntity.CELL_SIZE
+        for x in range(0, self.width, cell):
+            pygame.draw.line(self.screen, (30, 30, 45), (x, 0), (x, self.height))
+        for y in range(0, self.height, cell):
+            pygame.draw.line(self.screen, (30, 30, 45), (0, y), (self.width, y))
         for e in (self.food, self.snake):
             e.draw(self.screen)
         score_text = self.font.render(f"Score: {self.score}", True, "white")
@@ -173,3 +180,4 @@ class GameAI:
 
     def set_game_over(self, value):
         self.game_over = value
+# ##################################################

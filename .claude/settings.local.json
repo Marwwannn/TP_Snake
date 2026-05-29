@@ -10,7 +10,17 @@
       "Bash(git push *)",
       "Bash(gh auth *)",
       "Bash(echo \"exit:$?\")",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(git -C \"C:/Users/marwy/Documents/GitHub/TP_Snake\" branch --show-current)",
+      "Bash(git -C \"C:/Users/marwy/Documents/GitHub/TP_Snake\" status --short)",
+      "Bash(cp dist/Game.exe site/downloads/Game.exe)",
+      "Bash(cp model/model.pth site/downloads/model.pth)",
+      "Bash(tasklist)",
+      "Bash(cp model/model_v3.pth model/model.pth)",
+      "Bash(rm -f model/model_baseline.pth model/model_v2.pth model/model_v3.pth train_run.py)",
+      "Bash(timeout 4 ./dist/Game.exe)",
+      "Bash(file assets/*.png)",
+      "Bash(node --check script.js)"
     ]
   }
 }

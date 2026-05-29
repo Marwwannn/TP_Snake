@@ -44,10 +44,20 @@ class Game:
             self.score += 1
     
     def draw(self):
-        self.screen.fill("black")
+        # ############### CODE IA (Claude) ###############
+        # Fond sombre + grille (visuel ameliore).
+        self.screen.fill((18, 18, 28))
+        cell = self.snake.CELL_SIZE
+        for x in range(0, self.width, cell):
+            pygame.draw.line(self.screen, (30, 30, 45), (x, 0), (x, self.height))
+        for y in range(0, self.height, cell):
+            pygame.draw.line(self.screen, (30, 30, 45), (0, y), (self.width, y))
+        # ################################################
         for e in self.entities:
             e.draw(self.screen)
 
+        # ############### CODE IA (ChatGPT) ###############
+        # Affichage du score et de l'ecran Game Over.
         # Utiliser GPT pour m'afficher le score
         font = pygame.font.Font(None, 36)
         score_text = font.render(f"Score: {self.score}", True, "white")
@@ -64,6 +74,7 @@ class Game:
             restart_text = font_small.render("Appuie sur R pour rejouer", True, "white")
             text_rect = restart_text.get_rect(center=(self.width // 2, self.height // 2 + 50))
             self.screen.blit(restart_text, text_rect)
+        # ##################################################
         pygame.display.flip()
 
     def run(self):

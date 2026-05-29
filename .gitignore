@@ -6,8 +6,6 @@ build/
 dist/
 *.spec
 
-model/*.pth
-
 .venv/
 venv/
 .vscode/

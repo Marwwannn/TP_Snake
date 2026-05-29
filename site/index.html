@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP Snake - Compte rendu de projet</title>
+<meta name="description" content="Compte rendu du projet de Programmation Orientée Objet : un jeu Snake en Python + un agent IA (Deep Q-Learning) qui apprend à jouer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Barre de progression de lecture -->
+<div class="progress" id="progress"></div>
+
+<!-- Topbar (mobile) -->
+<header class="topbar">
+  <button class="menu-btn" id="menuBtn" aria-label="Ouvrir le menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="topbar-brand" href="#accueil"><span class="logo" aria-hidden="true"></span> TP Snake</a>
+</header>
+
+<div class="overlay" id="overlay" hidden></div>
+
+<!-- Sidebar / sommaire -->
+<aside class="sidebar" id="sidebar">
+  <a class="brand" href="#accueil">
+    <span class="logo" aria-hidden="true"></span>
+    <span class="brand-txt">TP Snake<small>Compte rendu POO</small></span>
+  </a>
+  <nav aria-label="Sommaire">
+    <a href="#accueil">Accueil</a>
+    <a href="#presentation"><span class="n">01</span> Présentation</a>
+    <a href="#jeu"><span class="n">02</span> Le jeu (.exe)</a>
+    <a href="#fonctionnalites"><span class="n">03</span> Fonctionnalités</a>
+    <a href="#architecture"><span class="n">04</span> Architecture &amp; POO</a>
+    <a href="#ia"><span class="n">05</span> L'IA (Deep Q-Learning)</a>
+    <a href="#installation"><span class="n">06</span> Installation &amp; tests</a>
+    <a href="#usage-ia"><span class="n">07</span> Usage de l'IA</a>
+    <a href="#sources"><span class="n">08</span> Fichiers source</a>
+    <a href="#limites"><span class="n">09</span> Limites &amp; pistes</a>
+    <a href="#questions"><span class="n">10</span> Réponses aux questions</a>
+    <a href="#rendu"><span class="n">11</span> Rendu</a>
+  </nav>
+  <div class="side-foot">
+    Projet POO &middot; Python<br>
+    Auteur : Marwan &middot; 2026
+  </div>
+</aside>
+
+<main class="content">
+
+  <!-- ACCUEIL -->
+  <header class="hero" id="accueil">
+    <div class="hero-grid wrap">
+      <div class="hero-copy reveal">
+        <span class="eyebrow">Projet de Programmation Orientée Objet</span>
+        <h1>Un Snake en Python<br>qu'une <span class="grad">IA apprend à jouer</span></h1>
+        <p>Un jeu Snake jouable au clavier, puis un agent de <strong>Deep Q-Learning</strong>
+           entraîné à y jouer tout seul. Le même moteur objet sert à l'humain et à l'IA.</p>
+        <div class="badges">
+          <span class="badge">Python</span>
+          <span class="badge">pygame</span>
+          <span class="badge">PyTorch</span>
+          <span class="badge">DQN</span>
+          <span class="badge">PyInstaller</span>
+        </div>
+        <div class="btns">
+          <a class="btn primary" href="downloads/Game.exe" download>Télécharger le jeu (.exe)</a>
+          <a class="btn ghost" href="#sources">Voir le code</a>
+        </div>
+      </div>
+
+      <!-- Mini-Snake jouable -->
+      <div class="hero-play reveal">
+        <div class="play-head">
+          <span class="play-title">Jouez dans le navigateur</span>
+          <div class="play-scores">
+            <span class="score-chip">Score <b id="hsScore">0</b></span>
+            <span class="score-chip">Record <b id="hsBest">0</b></span>
+          </div>
+        </div>
+        <div class="board-wrap">
+          <canvas id="board" width="420" height="420" aria-label="Mini jeu Snake jouable"></canvas>
+          <div class="board-overlay" id="boardOverlay">
+            <div class="ov-inner">
+              <p class="ov-title" id="ovTitle">Mini Snake</p>
+              <p class="ov-sub" id="ovSub">Flèches ou ZQSD pour jouer</p>
+              <button class="btn primary sm" id="ovBtn">Jouer</button>
+            </div>
+          </div>
+        </div>
+        <div class="dpad" aria-hidden="true">
+          <button data-dir="up">&uarr;</button>
+          <button data-dir="left">&larr;</button>
+          <button data-dir="down">&darr;</button>
+          <button data-dir="right">&rarr;</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PRÉSENTATION -->
+  <section id="presentation">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">01</span>
+        <h2>Présentation du projet</h2>
+        <p class="lead">Description, problème abordé et public cible.</p>
+      </div>
+
+      <h3>Description</h3>
+      <p>Le projet est une implémentation complète du jeu <strong>Snake</strong> en Python avec la
+         bibliothèque <strong>pygame</strong>. Le joueur dirige un serpent qui doit manger des pommes
+         pour grandir, sans toucher les murs ni son propre corps. Au-delà du jeu jouable, le projet
+         contient un <strong>agent d'intelligence artificielle</strong> qui apprend à jouer seul par
+         apprentissage par renforcement (Deep Q-Learning).</p>
+
+      <h3>Problème / objectif</h3>
+      <p>L'objectif pédagogique est de mettre en pratique les concepts de la
+         <strong>Programmation Orientée Objet</strong> (héritage, polymorphisme, encapsulation) sur
+         un projet concret et fini, puis d'aller plus loin avec une couche d'IA : montrer qu'une
+         architecture objet bien pensée se réutilise facilement (le même moteur de jeu sert à
+         l'humain <em>et</em> à l'IA).</p>
+
+      <h3>Public cible</h3>
+      <div class="grid cols-3">
+        <div class="card reveal"><h4>Joueurs</h4><p>Un Snake classique, jouable immédiatement via l'exécutable.</p></div>
+        <div class="card reveal"><h4>Jury POO</h4><p>Une démonstration claire d'héritage, polymorphisme et encapsulation.</p></div>
+        <div class="card reveal"><h4>Curieux d'IA</h4><p>Un exemple concret et lisible de Deep Q-Learning de bout en bout.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LE JEU -->
+  <section class="alt" id="jeu">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">02</span>
+        <h2>Le jeu</h2>
+        <p class="lead">Téléchargement de l'exécutable, contrôles et aperçu.</p>
+      </div>
+
+      <div class="note reveal">
+        <strong>Jouer sans rien installer :</strong> téléchargez l'exécutable Windows et double-cliquez.
+        <div class="btns" style="margin-top:14px">
+          <a class="btn primary" href="downloads/Game.exe" download>Télécharger Game.exe (≈ 27 Mo)</a>
+        </div>
+      </div>
+
+      <h3>Aperçu</h3>
+      <div class="shots">
+        <figure class="reveal"><img src="assets/gameplay.png" alt="Partie en cours, serpent vert sur la grille avec une pomme"><figcaption>Partie en cours : serpent vert, pomme, grille.</figcaption></figure>
+        <figure class="reveal"><img src="assets/gameover.png" alt="Écran de fin de partie avec le score et le record"><figcaption>Écran de fin de partie avec score et record.</figcaption></figure>
+      </div>
+
+      <h3>Contrôles</h3>
+      <table class="reveal">
+        <thead><tr><th>Touche</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">&uarr; &darr; &larr; &rarr;</code></td><td>Déplacer le serpent</td></tr>
+          <tr><td><code class="inline">R</code></td><td>Relancer la partie après un Game Over</td></tr>
+        </tbody>
+      </table>
+      <p>Le serpent ne peut pas faire demi-tour instantanément, et accélère par paliers de score (10 puis 20 points).</p>
+    </div>
+  </section>
+
+  <!-- FONCTIONNALITÉS -->
+  <section id="fonctionnalites">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">03</span>
+        <h2>Fonctionnalités &amp; bonus</h2>
+        <p class="lead">La fonctionnalité centrale et les améliorations ajoutées.</p>
+      </div>
+
+      <h3>Fonctionnalité centrale</h3>
+      <ul>
+        <li>Jeu Snake complet : déplacement, croissance, score, détection de collisions (murs + corps).</li>
+        <li>Boucle de jeu fluide avec affichage du score en temps réel.</li>
+        <li>Game Over + relance instantanée (touche <code class="inline">R</code>) sans fermer la fenêtre.</li>
+      </ul>
+
+      <h3>Bonus &amp; améliorations</h3>
+      <div class="grid cols-2">
+        <div class="card reveal"><h4>Agent IA (DQN)</h4><p>Un réseau de neurones apprend à jouer seul et bat largement un humain. Voir la <a href="#ia">section 5</a>.</p></div>
+        <div class="card reveal"><h4>Accélération par paliers</h4><p>Le serpent va plus vite à 10 puis 20 points, augmentant la difficulté.</p></div>
+        <div class="card reveal"><h4>Pas de demi-tour</h4><p>Contrôle sur la direction : impossible de repartir à l'opposé instantanément.</p></div>
+        <div class="card reveal"><h4>Exécutable autonome</h4><p>Build PyInstaller : un <code class="inline">.exe</code> jouable sans Python installé.</p></div>
+        <div class="card reveal"><h4>Visuel soigné</h4><p>Grille de fond, serpent en dégradé à coins arrondis avec yeux, pomme dessinée.</p></div>
+        <div class="card reveal"><h4>Gestion d'états</h4><p>États <em>running</em> / <em>game over</em> / <em>restart</em> via réinitialisation propre.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section class="alt" id="architecture">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">04</span>
+        <h2>Architecture &amp; POO</h2>
+        <p class="lead">Structure modulaire et application concrète des concepts objet.</p>
+      </div>
+
+      <h3>Hiérarchie des classes</h3>
+      <pre class="block reveal"><code>Entity                      <span class="cmt"># interface : update(game) + draw(screen)</span>
+&#9492;&#9472; MovingEntity            <span class="cmt"># direction, CELL_SIZE, vitesse + setters validés</span>
+   &#9500;&#9472; Snake                <span class="cmt"># corps, croissance, collisions, tête</span>
+   &#9492;&#9472; Food                 <span class="cmt"># position aléatoire, réapparition</span>
+
+Game      <span class="cmt"># orchestre tout pour le joueur humain (clavier)</span>
+GameAI    <span class="cmt"># même moteur, mais step-by-step pour entraîner l'IA</span></code></pre>
+
+      <div class="grid cols-3">
+        <div class="card reveal"><h4>Héritage</h4><p><code class="inline">Snake</code> et <code class="inline">Food</code> héritent de <code class="inline">MovingEntity</code>, elle-même fille de <code class="inline">Entity</code>.</p></div>
+        <div class="card reveal"><h4>Polymorphisme</h4><p>La boucle <code class="inline">for e in entities: e.draw()</code> traite Snake et Food de façon uniforme via l'interface <code class="inline">Entity</code>.</p></div>
+        <div class="card reveal"><h4>Encapsulation</h4><p>Attributs privés (<code class="inline">_body</code>, <code class="inline">_dx</code>) et setters qui <strong>valident</strong> (taille de cellule &gt; 0, pas de direction nulle).</p></div>
+      </div>
+
+      <h3>Choix techniques justifiés</h3>
+      <table class="reveal">
+        <thead><tr><th>Choix</th><th>Pourquoi</th></tr></thead>
+        <tbody>
+          <tr><td><strong>pygame</strong></td><td>Bibliothèque 2D standard et légère pour le rendu et la gestion clavier.</td></tr>
+          <tr><td><strong>PyTorch</strong></td><td>Construction simple du réseau et de la rétropropagation pour le DQN.</td></tr>
+          <tr><td><strong>Séparation <code class="inline">Game</code> / <code class="inline">GameAI</code></strong></td><td>Le moteur humain garde sa boucle temps réel ; l'IA a besoin d'un mode step-by-step sans affichage pour entraîner vite.</td></tr>
+          <tr><td><strong>Attributs de classe</strong></td><td><code class="inline">CELL_SIZE</code> et <code class="inline">DEFAULT_SPEED</code> sont partagés par toutes les instances : une seule source de vérité.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- IA -->
+  <section id="ia">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">05</span>
+        <h2>L'IA, Deep Q-Learning</h2>
+        <p class="lead">Un agent apprend à jouer par essais et erreurs, sans aucune règle codée.</p>
+      </div>
+
+      <div class="stats reveal">
+        <div class="stat"><div class="big" data-count="41" data-prefix="~">~41</div><div class="lbl">score moyen (greedy)</div></div>
+        <div class="stat"><div class="big" data-count="86">86</div><div class="lbl">record observé</div></div>
+        <div class="stat"><div class="big">11&rarr;256&rarr;3</div><div class="lbl">réseau de neurones</div></div>
+      </div>
+
+      <h3>Comment ça marche</h3>
+      <p>L'agent observe un <strong>état</strong>, choisit une <strong>action</strong>, reçoit une
+         <strong>récompense</strong>, et ajuste son réseau pour maximiser les récompenses futures
+         (équation de Bellman, mémoire de rejeu, politique &epsilon;-greedy).</p>
+
+      <div class="grid cols-3">
+        <div class="card reveal">
+          <h4>État (11 valeurs)</h4>
+          <p>3 dangers (devant / droite / gauche), 4 direction actuelle, 4 position relative de la pomme.</p>
+        </div>
+        <div class="card reveal">
+          <h4>Actions (3)</h4>
+          <p><code class="inline">[1,0,0]</code> tout droit, <code class="inline">[0,1,0]</code> tourner à droite, <code class="inline">[0,0,1]</code> tourner à gauche.</p>
+        </div>
+        <div class="card reveal">
+          <h4>Récompenses</h4>
+          <p><code class="inline">+10</code> manger, <code class="inline">-10</code> mourir, <code class="inline">0</code> sinon.</p>
+        </div>
+      </div>
+
+      <h3>Lancer l'IA</h3>
+      <pre class="block reveal"><code>pip install -r requirements.txt
+python play.py            <span class="cmt"># l'IA entraînée joue toute seule</span>
+python train.py           <span class="cmt"># (ré)entraîner l'agent</span></code></pre>
+      <div class="note reveal"><strong>Le modèle entraîné est fourni</strong> (<code class="inline">model/model.pth</code>) :
+        l'IA joue immédiatement, sans entraînement préalable.</div>
+
+      <h3>Optimisation &amp; expérimentations</h3>
+      <p>Plusieurs leviers ont été testés de façon mesurée (réseau plus profond, <em>reward shaping</em>
+         guidant vers la pomme, entraînements plus longs). Chaque variante a été
+         <strong>évaluée objectivement</strong> sur des dizaines de parties et n'a été conservée que
+         si elle battait réellement le modèle de référence.</p>
+    </div>
+  </section>
+
+  <!-- INSTALLATION -->
+  <section class="alt" id="installation">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">06</span>
+        <h2>Installation, lancement &amp; tests</h2>
+        <p class="lead">Comment installer, lancer et vérifier le projet.</p>
+      </div>
+
+      <h3>Prérequis</h3>
+      <ul>
+        <li>Python 3.x</li>
+        <li>Dépendances : <code class="inline">pygame</code>, <code class="inline">numpy</code>, <code class="inline">torch</code></li>
+      </ul>
+
+      <h3>Installation</h3>
+      <pre class="block reveal"><code>git clone &lt;repo&gt;   <span class="cmt"># ou décompresser TP_Snake_source.zip</span>
+cd TP_Snake
+pip install -r requirements.txt</code></pre>
+
+      <h3>Lancement</h3>
+      <table class="reveal">
+        <thead><tr><th>Commande</th><th>Effet</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">python Game.py</code></td><td>Jouer au clavier (humain)</td></tr>
+          <tr><td><code class="inline">python play.py</code></td><td>Regarder l'IA jouer</td></tr>
+          <tr><td><code class="inline">python train.py</code></td><td>Entraîner l'agent (<code class="inline">--render</code> pour voir)</td></tr>
+          <tr><td><code class="inline">dist/Game.exe</code></td><td>Lancer le jeu sans Python (Windows)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Validation</h3>
+      <p>La logique de l'IA est validée par un <strong>scénario automatisé</strong> : on fait jouer
+         l'agent entraîné en mode <em>greedy</em> sur 20 à 30 parties en headless et on mesure le score
+         moyen et le record, ce qui permet de comparer objectivement chaque version du modèle.</p>
+    </div>
+  </section>
+
+  <!-- USAGE IA -->
+  <section id="usage-ia">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">07</span>
+        <h2>Usage de l'IA (déclaration)</h2>
+        <p class="lead">Déclaration transparente de l'utilisation d'outils d'IA, comme exigé par le sujet.</p>
+      </div>
+
+      <div class="note warn reveal"><strong>Transparence, déclaration globale :</strong>
+        à l'exception du <strong>jeu Snake de base</strong> (les classes du jeu et sa logique :
+        <code class="inline">Entity</code>, <code class="inline">MovingEntity</code>,
+        <code class="inline">Snake</code>, <code class="inline">Food</code>, <code class="inline">Game</code>),
+        <strong>tout le reste du projet a été réalisé avec l'aide de l'IA</strong> : l'agent
+        d'intelligence artificielle (DQN), l'amélioration du rendu graphique, les optimisations et
+        ce compte rendu. Le code généré par IA est signalé directement dans les fichiers source par
+        des blocs <code class="inline"># CODE IA (nom)</code>.</div>
+
+      <table class="reveal">
+        <thead><tr><th>Outil</th><th>Pourquoi / où</th><th>Ce qui a été modifié, compris et validé</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>ChatGPT</strong></td>
+            <td>Aide ponctuelle pour le code d'affichage pygame (centrage du texte, rendu du Game Over) dans <code class="inline">Game.draw()</code>.</td>
+            <td>Compris la logique de <code class="inline">get_rect(center=...)</code> et <code class="inline">blit</code> ; code relu et intégré manuellement.</td>
+          </tr>
+          <tr>
+            <td><strong>Claude</strong> (Anthropic)</td>
+            <td>Conception de l'agent DQN (état, récompenses, réseau, boucle d'entraînement), expérimentations d'optimisation, refonte graphique et rédaction de ce compte rendu.</td>
+            <td>Chaque variante de modèle évaluée par mesure objective ; seules les améliorations prouvées sont conservées ; architecture comprise et défendable à l'oral.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Exemples de demandes (prompts)</h3>
+      <ul>
+        <li>Implémente un agent DQN pour mon Snake en réutilisant mes classes existantes.</li>
+        <li>Rends l'IA plus performante ; n'adopte un nouveau modèle que s'il bat l'ancien, sinon reviens en arrière.</li>
+        <li>Rends le jeu plus joli en pur pygame (grille, serpent, pomme).</li>
+        <li>Fais un site servant de compte rendu avec le jeu en .exe, les explications et les sources.</li>
+      </ul>
+
+      <h3>Taux d'utilisation</h3>
+      <p><strong>Seul le jeu Snake de base a été conçu par l'auteur</strong> (classes
+         <code class="inline">Entity</code>, <code class="inline">MovingEntity</code>,
+         <code class="inline">Snake</code>, <code class="inline">Food</code>, <code class="inline">Game</code>
+         et leur logique). <strong>Tout le reste a été fait avec l'IA</strong> : l'agent DQN
+         (<code class="inline">GameAI.py</code>, <code class="inline">SnakeAI.py</code>,
+         <code class="inline">train.py</code>, <code class="inline">play.py</code>), le rendu graphique
+         amélioré (méthodes <code class="inline">draw</code>), les optimisations du modèle et ce compte
+         rendu. Tous les choix ont été compris, vérifiés et sont défendables à l'oral.</p>
+    </div>
+  </section>
+
+  <!-- SOURCES -->
+  <section class="alt" id="sources">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">08</span>
+        <h2>Fichiers source</h2>
+        <p class="lead">Le code complet, consultable ici et téléchargeable.</p>
+      </div>
+
+      <div class="btns reveal" style="margin-bottom:22px">
+        <a class="btn primary" href="downloads/TP_Snake_source.zip" download>Tout le code source (.zip)</a>
+        <a class="btn ghost" href="downloads/model.pth" download>Modèle entraîné (model.pth)</a>
+      </div>
+
+      <div class="viewer reveal">
+        <div class="tabs" id="tabs"></div>
+        <div class="code-area">
+          <div class="gutter" id="gutter"></div>
+          <pre id="codeView"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIMITES -->
+  <section id="limites">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">09</span>
+        <h2>Limites &amp; pistes d'amélioration</h2>
+        <p class="lead">Ce qui pourrait aller plus loin.</p>
+      </div>
+      <div class="grid cols-2">
+        <div class="card reveal"><h4>État de l'IA limité</h4><p>Les 11 features ne voient que le danger immédiat : le serpent peut se piéger sur de longues parties. Un état plus riche (vision de la grille) débloquerait de meilleurs scores.</p></div>
+        <div class="card reveal"><h4>Pas de menu / pause</h4><p>Le pattern d'états pourrait être étendu (menu d'accueil, pause).</p></div>
+        <div class="card reveal"><h4>Exe sans IA</h4><p>L'exécutable contient le jeu humain ; embarquer PyTorch alourdirait fortement le binaire. L'IA se lance via <code class="inline">python play.py</code>.</p></div>
+        <div class="card reveal"><h4>Tests à étoffer</h4><p>La validation repose sur un scénario automatisé ; des tests unitaires par classe renforceraient la couverture.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUESTIONS -->
+  <section class="alt" id="questions">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">10</span>
+        <h2>Réponses aux questions</h2>
+        <p class="lead">Questions de compréhension POO posées dans l'énoncé.</p>
+      </div>
+
+      <div class="qa">
+        <details class="reveal" open>
+          <summary>Rôles de Snake, Food, Game ?</summary>
+          <p><strong>Snake</strong> gère le serpent (déplacement, corps, rendu). <strong>Food</strong> gère la
+             pomme (position, réapparition, rendu). <strong>Game</strong> réunit le tout : crée les entités,
+             vérifie les conditions (score quand tête = pomme), gère la fenêtre et l'affichage.</p>
+        </details>
+        <details class="reveal">
+          <summary>Un accès direct à <code class="inline">snake._body</code> qui casse le jeu ?</summary>
+          <p>Si du code externe vide la liste <code class="inline">_body</code>, le serpent n'a plus de tête :
+             <code class="inline">head_pos()</code> plante et le jeu devient injouable. D'où l'encapsulation.</p>
+        </details>
+        <details class="reveal">
+          <summary>Polymorphisme : quelle interface implicite partagent Food et Snake ?</summary>
+          <p>Toutes deux héritent d'<code class="inline">Entity</code> et exposent <code class="inline">update()</code>
+             et <code class="inline">draw()</code> : Game les manipule sans connaître leur type concret.</p>
+        </details>
+        <details class="reveal">
+          <summary>Pourquoi <code class="inline">Food.update()</code> existe alors qu'il ne fait rien ?</summary>
+          <p>Pour respecter l'interface commune <code class="inline">Entity</code> : la boucle peut appeler
+             <code class="inline">update()</code> sur n'importe quelle entité. C'est le polymorphisme.</p>
+        </details>
+        <details class="reveal">
+          <summary>Pourquoi <code class="inline">CELL_SIZE</code> et <code class="inline">DEFAULT_SPEED</code> en attributs de classe ?</summary>
+          <p>Ces valeurs sont communes à toutes les instances : une seule définition partagée, pas une copie par objet.</p>
+        </details>
+        <details class="reveal">
+          <summary>Un exemple où <code class="inline">set_cell_size()</code> protège le programme ?</summary>
+          <p>Le setter refuse une valeur &le; 0 (<code class="inline">if value &gt; 0</code>), évitant une taille de
+             cellule nulle ou négative qui casserait le rendu et les calculs de position.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- RENDU -->
+  <section id="rendu">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="kicker">11</span>
+        <h2>Rendu</h2>
+        <p class="lead">Les livrables du projet.</p>
+      </div>
+      <table class="reveal">
+        <tbody>
+          <tr><td>Auteur</td><td>Marwan</td></tr>
+          <tr><td>Module</td><td>Programmation Orientée Objet</td></tr>
+          <tr><td>Jeu (.exe)</td><td><a href="downloads/Game.exe" download>Game.exe</a></td></tr>
+          <tr><td>Code source</td><td><a href="downloads/TP_Snake_source.zip" download>TP_Snake_source.zip</a></td></tr>
+          <tr><td>Modèle IA</td><td><a href="downloads/model.pth" download>model.pth</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap">Compte rendu, projet Snake (POO + IA). Réalisé par Marwan, 2026.</div>
+  </footer>
+
+</main>
+
+<script src="sources.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

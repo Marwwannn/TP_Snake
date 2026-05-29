@@ -1,3 +1,5 @@
+# ############### CODE IA (Claude) ###############
+# Fichier entierement genere avec l'IA (reseau Q + trainer + agent DQN).
 import os
 import random
 from collections import deque
@@ -37,7 +39,11 @@ class Linear_QNet(nn.Module):
         path = os.path.join(folder, file_name)
         if not os.path.exists(path):
             return False
-        self.load_state_dict(torch.load(path))
+        try:
+            self.load_state_dict(torch.load(path))
+        except Exception:
+            # poids incompatibles avec l'architecture courante
+            return False
         self.eval()
         return True
 
@@ -129,3 +135,4 @@ class Agent:
             mini_sample = self.memory
         states, actions, rewards, next_states, dones = zip(*mini_sample)
         self.trainer.train_step(states, actions, rewards, next_states, dones)
+# ##################################################
