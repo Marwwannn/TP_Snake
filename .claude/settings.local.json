@@ -20,7 +20,12 @@
       "Bash(rm -f model/model_baseline.pth model/model_v2.pth model/model_v3.pth train_run.py)",
       "Bash(timeout 4 ./dist/Game.exe)",
       "Bash(file assets/*.png)",
-      "Bash(node --check script.js)"
+      "Bash(node --check script.js)",
+      "Bash(gh run *)",
+      "Bash(gh api *)",
+      "PowerShell(gh *)",
+      "PowerShell(Start-Sleep 6; try { \\(Invoke-RestMethod \"https://api.github.com/repos/Marwwannn/TP_Snake/actions/runs?per_page=3\" -Headers @{ 'User-Agent'='cc' }\\).workflow_runs | Select-Object head_sha,status,conclusion,created_at | Format-List } catch { $_.Exception.Message })",
+      "PowerShell(try { $r=Invoke-WebRequest \"https://marwwannn.github.io/TP_Snake/\" -UseBasicParsing -Headers @{ 'User-Agent'='cc' }; \"HTTP $\\($r.StatusCode\\) | taille=$\\($r.Content.Length\\) octets\" } catch { \"ERR: $\\($_.Exception.Response.StatusCode.value__\\)\" })"
     ]
   }
 }
