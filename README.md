@@ -122,12 +122,15 @@ En plus du jeu jouable, le projet contient un agent qui apprend a jouer tout seu
 
 ### Fichiers IA
 
+Tous les fichiers lies a l'IA sont regroupes dans le dossier **`IA/`**.
+
 | Fichier | Role |
 |--------|------|
-| `GameAI.py` | Version step-by-step du jeu : `reset()`, `play_step(action)`, `get_state()`. Pas d'affichage par defaut. |
-| `SnakeAI.py` | Reseau `Linear_QNet` (11 -> 256 -> 3) + `QTrainer` (Adam + MSE) + `Agent` (epsilon-greedy + replay memory). |
-| `train.py` | Boucle d'entrainement. |
-| `play.py` | Charge `model/model.pth` et regarde l'agent jouer. |
+| `IA/GameAI.py` | Version step-by-step du jeu : `reset()`, `play_step(action)`, `get_state()`. Pas d'affichage par defaut. |
+| `IA/SnakeAI.py` | Reseau `Linear_QNet` (11 -> 256 -> 3) + `QTrainer` (Adam + MSE) + `Agent` (epsilon-greedy + replay memory). |
+| `IA/train.py` | Boucle d'entrainement. |
+| `IA/play.py` | Charge `IA/model/model.pth` et regarde l'agent jouer. |
+| `IA/model/model.pth` | Poids du reseau entraine (livre avec le projet). |
 
 ### Etat (11 features booleennes)
 
@@ -156,20 +159,20 @@ pip install -r requirements.txt
 ### Lancer l'entrainement
 
 ```bash
-python train.py            # mode headless rapide
-python train.py --render   # voir l'apprentissage en temps reel
+python IA/train.py            # mode headless rapide
+python IA/train.py --render   # voir l'apprentissage en temps reel
 ```
 
-Le modele est sauvegarde dans `model/model.pth` a chaque nouveau record. Stop avec `Ctrl+C`.
+Le modele est sauvegarde dans `IA/model/model.pth` a chaque nouveau record. Stop avec `Ctrl+C`.
 
 ### Voir l'agent jouer
 
-Le modele entraine (`model/model.pth`) est **livre avec le projet** : pas besoin
+Le modele entraine (`IA/model/model.pth`) est **livre avec le projet** : pas besoin
 d'entrainer quoi que ce soit, l'IA joue directement.
 
 ```bash
-python play.py            # une IA entrainee joue au Snake toute seule
-python play.py --speed 60 # plus rapide
+python IA/play.py            # une IA entrainee joue au Snake toute seule
+python IA/play.py --speed 60 # plus rapide
 ```
 
 A l'execution, une fenetre s'ouvre et le serpent est entierement controle par
@@ -187,7 +190,7 @@ realise avec l'aide de l'IA** :
 
 | Outil | Ou / pourquoi |
 |-------|---------------|
-| **Claude** (Anthropic) | Agent DQN complet (`GameAI.py`, `SnakeAI.py`, `train.py`, `play.py`), rendu graphique ameliore (methodes `draw`), optimisation du modele, et le compte rendu (site). |
+| **Claude** (Anthropic) | Agent DQN complet (`IA/GameAI.py`, `IA/SnakeAI.py`, `IA/train.py`, `IA/play.py`), rendu graphique ameliore (methodes `draw`), optimisation du modele, et le compte rendu (site). |
 | **ChatGPT** | Aide ponctuelle pour l'affichage pygame (score + ecran Game Over) dans `Game.draw()`. |
 
 Le code genere par IA est encadre directement dans les fichiers source par des blocs :

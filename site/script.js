@@ -1,24 +1,15 @@
 /* =========================================================
-   TP Snake - Compte rendu | interactions
+   Neon Snake — interactions
    ========================================================= */
 'use strict';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ---------- Menu mobile ---------- */
-const menuBtn = document.getElementById('menuBtn');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-
-function setMenu(open) {
-  sidebar.classList.toggle('open', open);
-  menuBtn.setAttribute('aria-expanded', String(open));
-  overlay.hidden = !open;
-  requestAnimationFrame(() => overlay.classList.toggle('show', open));
-}
-menuBtn.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
-overlay.addEventListener('click', () => setMenu(false));
-sidebar.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+/* ---------- Navbar : état au scroll ---------- */
+const nav = document.getElementById('nav');
+function onScrollNav() { nav.classList.toggle('scrolled', window.scrollY > 12); }
+document.addEventListener('scroll', onScrollNav, { passive: true });
+onScrollNav();
 
 /* ---------- Barre de progression de lecture ---------- */
 const progress = document.getElementById('progress');
@@ -29,19 +20,6 @@ function updateProgress() {
 }
 document.addEventListener('scroll', updateProgress, { passive: true });
 updateProgress();
-
-/* ---------- Scrollspy ---------- */
-const links = [...document.querySelectorAll('.sidebar nav a')];
-const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
-const spy = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const id = '#' + e.target.id;
-      links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === id));
-    }
-  });
-}, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
-sections.forEach(s => spy.observe(s));
 
 /* ---------- Reveal au scroll ---------- */
 const revealEls = [...document.querySelectorAll('.reveal')];
@@ -56,7 +34,7 @@ if (reduceMotion) {
   revealEls.forEach(el => revObs.observe(el));
 }
 
-/* ---------- Compteurs animes ---------- */
+/* ---------- Compteurs animés ---------- */
 const counters = [...document.querySelectorAll('[data-count]')];
 const countObs = new IntersectionObserver((entries, obs) => {
   entries.forEach(e => {
@@ -77,37 +55,6 @@ const countObs = new IntersectionObserver((entries, obs) => {
 }, { threshold: 0.5 });
 counters.forEach(c => countObs.observe(c));
 
-/* ---------- Visionneuse de code ---------- */
-const tabs = document.getElementById('tabs');
-const codeView = document.getElementById('codeView');
-const gutter = document.getElementById('gutter');
-
-function escapeHtml(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-function showFile(name) {
-  const content = (typeof SOURCES !== 'undefined' && SOURCES[name]) || '// fichier indisponible';
-  const lines = content.replace(/\n$/, '').split('\n');
-  gutter.textContent = lines.map((_, i) => i + 1).join('\n');
-  codeView.innerHTML = escapeHtml(lines.join('\n'));
-  [...tabs.children].forEach(b => b.classList.toggle('active', b.dataset.file === name));
-  codeView.parentElement.scrollTop = 0;
-}
-if (typeof SOURCES !== 'undefined' && tabs) {
-  const order = ['Entity.py', 'MovingEntity.py', 'Snake.py', 'Food.py',
-                 'Game.py', 'GameAI.py', 'SnakeAI.py', 'train.py', 'play.py', 'requirements.txt'];
-  const files = order.filter(f => f in SOURCES).concat(
-    Object.keys(SOURCES).filter(f => !order.includes(f)));
-  files.forEach(name => {
-    const btn = document.createElement('button');
-    btn.textContent = name;
-    btn.dataset.file = name;
-    btn.addEventListener('click', () => showFile(name));
-    tabs.appendChild(btn);
-  });
-  if (files.length) showFile(files[0]);
-}
-
 /* =========================================================
    Mini-Snake jouable (canvas)
    ========================================================= */
@@ -116,16 +63,16 @@ if (typeof SOURCES !== 'undefined' && tabs) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  const GRID = 17;          // cellules par cote
+  const GRID = 17;          // cellules par côté
   const COLORS = {
-    bg: '#0e1320', grid: '#171f33',
-    head: '#34d77f', body: '#16a05a', bodyDark: '#0f7d45',
-    food: '#ff5d5d', foodGlow: 'rgba(255,93,93,.35)'
+    bg: '#070b14', grid: 'rgba(255,255,255,.045)',
+    head: '#5bffb6', body: '#2bff9e', bodyDark: '#15c97a',
+    food: '#ff4d8d', foodGlow: 'rgba(255,77,141,.35)'
   };
 
   let cell, snake, dir, nextDir, food, score, best, timer, running = false, dead = false;
 
-  best = parseInt(localStorage.getItem('tpsnake-best') || '0', 10);
+  best = parseInt(localStorage.getItem('neonsnake-best') || '0', 10);
   const elScore = document.getElementById('hsScore');
   const elBest = document.getElementById('hsBest');
   const overlayEl = document.getElementById('boardOverlay');
@@ -211,7 +158,7 @@ if (typeof SOURCES !== 'undefined' && tabs) {
 
     if (!snake) return;
 
-    // pomme
+    // pomme (avec halo néon)
     const fx = food.x * cell, fy = food.y * cell;
     ctx.fillStyle = COLORS.foodGlow;
     roundRect(fx + 1, fy + 1, cell - 2, cell - 2, cell * 0.45);
@@ -220,14 +167,17 @@ if (typeof SOURCES !== 'undefined' && tabs) {
 
     // serpent
     const pad = Math.max(1, cell * 0.12);
+    ctx.shadowColor = 'rgba(43,255,158,.5)';
     snake.forEach((s, i) => {
+      ctx.shadowBlur = i === 0 ? 14 : 0;
       ctx.fillStyle = i === 0 ? COLORS.head : (i % 2 ? COLORS.body : COLORS.bodyDark);
       roundRect(s.x * cell + pad, s.y * cell + pad, cell - pad * 2, cell - pad * 2, cell * 0.28);
     });
+    ctx.shadowBlur = 0;
 
-    // yeux sur la tete
+    // yeux sur la tête
     const h = snake[0];
-    ctx.fillStyle = '#0e1320';
+    ctx.fillStyle = COLORS.bg;
     const ex = h.x * cell, ey = h.y * cell, e = cell * 0.13;
     const off = cell * 0.28;
     let e1, e2;
@@ -246,7 +196,7 @@ if (typeof SOURCES !== 'undefined' && tabs) {
     if (!running) return;
     step();
     if (dead) return;
-    const speed = Math.max(70, 150 - score * 4); // accelere avec le score
+    const speed = Math.max(70, 150 - score * 4); // accélère avec le score
     timer = setTimeout(() => requestAnimationFrame(loop), speed);
   }
 
@@ -261,9 +211,9 @@ if (typeof SOURCES !== 'undefined' && tabs) {
   function gameOver() {
     dead = true; running = false;
     clearTimeout(timer);
-    if (score > best) { best = score; localStorage.setItem('tpsnake-best', best); elBest.textContent = best; }
+    if (score > best) { best = score; localStorage.setItem('neonsnake-best', best); elBest.textContent = best; }
     ovTitle.textContent = 'Game Over';
-    ovSub.textContent = 'Score : ' + score + '  -  Record : ' + best;
+    ovSub.textContent = 'Score : ' + score + '  ·  Record : ' + best;
     ovBtn.textContent = 'Rejouer';
     overlayEl.classList.remove('hide');
   }
@@ -274,14 +224,13 @@ if (typeof SOURCES !== 'undefined' && tabs) {
     nextDir = { x, y };
   }
 
-  // Clavier (fleches + ZQSD + WASD), sans bloquer le scroll hors-jeu
+  // Clavier (flèches + ZQSD + WASD), sans bloquer le scroll hors-jeu
   const KEYS = {
     ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0],
     z: [0, -1], s: [0, 1], q: [-1, 0], d: [1, 0],
     w: [0, -1], a: [-1, 0]
   };
-  // Le clavier ne pilote le jeu que si le plateau est visible a l'ecran,
-  // pour ne jamais bloquer le scroll de la page avec les fleches.
+  // Le clavier ne pilote le jeu que si le plateau est visible à l'écran.
   let boardVisible = false;
   new IntersectionObserver((ents) => {
     boardVisible = ents[0].isIntersecting;
@@ -297,7 +246,7 @@ if (typeof SOURCES !== 'undefined' && tabs) {
     setDir(k[0], k[1]);
   });
 
-  // Pave directionnel tactile
+  // Pavé directionnel tactile
   document.querySelectorAll('.dpad button').forEach(b => {
     b.addEventListener('click', () => {
       if (!running) { start(); return; }
@@ -321,7 +270,7 @@ if (typeof SOURCES !== 'undefined' && tabs) {
 
   ovBtn.addEventListener('click', start);
 
-  // Pause quand l'onglet est cache
+  // Pause quand l'onglet est caché
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && running) { running = false; clearTimeout(timer); }
   });
